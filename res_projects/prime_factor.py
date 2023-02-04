@@ -3,7 +3,7 @@ import time
 
 
 # split split the number into the two biggest divisors
-# will be used for all numbers multiple times
+# will be used for all numbers multiple times until in form (1,prime)
 async def split(n):
     biggest_Split = n**(1/2)
     if biggest_Split % 1 == 0:
@@ -22,62 +22,49 @@ async def split(n):
             biggest_Split -= 1
     return(1,n)
 
-# if split[i][0] == 1 the add split[i][1] to factors
-# else return tuple of two numbers that need to be split
 
-
+#%{
+# if split[i][0] == 1 then print split[i][1]
+# else check( split( tuple[0] and tuple[1] ) )
+#
+# recursive function continues untill all prime factors are printed
+#}
 async def check(tuple):
     #print(tuple)
-    if tuple == None:
-        return
+    if tuple[0] == None:
+        print("given empty tuple")
     else:
         lowest_split = tuple[0]
         if lowest_split == 1:
-            print(tuple[1])
+            # star added to check work at end
+            print(tuple[1], "*")
+            return
             #factors = factors + str(tuple[1]) + ","
         else:
             await asyncio.gather(*[check(tup) for tup in (await asyncio.gather(split(int(tuple[0])),split(int(tuple[1]))))])
 
 
 #%{
-#   variables we need
-#       first_Split
-#           - called every time, tuple of two biggest divisors of n
-#               - found with main()
-#       nth_Split
-#           - return a split of split[i][1] with split[i][0] != 1
-#               - found in split()
-#       factors
-#           - string in form split[1][1],...,split[n][1]
-#           - where split[i][0] == 1
-#               - found in check
-#       split_Needed
-#           - tuple (split[0],split[1]) that need to be split
-#               - found in check()
+#   where everything is ran
+#       - calls check() with split(n)
+#   n is number that needs to be factored
+#   Start, Ends and Prints timer to see how long factoring took
 #}
-
-
-# nested function that will conitue untill number is fully splited
-
-async def main():
+async def main(n):
     s = time.perf_counter()
-    #factors = ""
-    # first split
-    first_Split = await split(56516154546151561654646442646555164684661651615)
+
+    #first_Split = await split(44215651515)
     #print("first split" , first_Split)
-    # run check for the first split to see if given prime
-    
-    nth_Split = await check(first_Split)
+    #await check(first_Split)
+
+    await check(await split(n))
 
     elapsed = time.perf_counter() - s
-    print(f"executed in {elapsed:0.2f} seconds.")
-    #for tuples in second_Split:
-        #check(tuples)
+    print(f"Time: {elapsed:0.3f} seconds.")
     
-    #print(factors)
 
 
-asyncio.run(main())
+asyncio.run(main(41165562616156165156165))
 
 
 
